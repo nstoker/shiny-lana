@@ -264,12 +264,12 @@ void Camera::configureImageSettings()
 
 void Camera::record()
 {
-    if(!mediaRecorder->setOutputLocation(QUrl("~/banana.mov")))
+    if(!mediaRecorder->setOutputLocation(QUrl::fromLocalFile("~/banana.mov")))
         std::cout<<"Failed to set output location"<<std::endl;
 
     QUrl dest=mediaRecorder->outputLocation();
     QString d=dest.toString();
-    std::cout<<"Output location"<<d.toStdString()<<std::endl;
+    std::cout<<"Output location "<<d.toStdString()<<std::endl;
 
     dumpMediaRecorder(mediaRecorder);
 
