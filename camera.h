@@ -45,6 +45,8 @@
 #include <QCameraImageCapture>
 #include <QMediaRecorder>
 
+#include <QUrl>
+
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -98,6 +100,8 @@ private slots:
 
     void readyForCapture(bool ready);
     void imageSaved(int id, const QString &fileName);
+
+    void locationChanged(QUrl newLocation);
 
 protected:
     void keyPressEvent(QKeyEvent *event);

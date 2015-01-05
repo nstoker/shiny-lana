@@ -123,6 +123,7 @@ void Camera::setCamera(const QByteArray &cameraDevice)
 
     mediaRecorder = new QMediaRecorder(camera);
     connect(mediaRecorder, SIGNAL(stateChanged(QMediaRecorder::State)), this, SLOT(updateRecorderState(QMediaRecorder::State)));
+    connect(mediaRecorder, SIGNAL(actualLocationChanged(QUrl)), this, SLOT(locationChanged(QUrl)));
 
     imageCapture = new QCameraImageCapture(camera);
 
@@ -457,4 +458,9 @@ void Camera::closeEvent(QCloseEvent *event)
     } else {
         event->accept();
     }
+}
+
+void Camera::locationChanged(QUrl newLocation)
+{
+    std::cout<<"Location Changed Signal "<< newLocation.toString().toStdString()<< std::endl;
 }
