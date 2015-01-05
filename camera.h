@@ -102,6 +102,8 @@ private slots:
     void imageSaved(int id, const QString &fileName);
 
     void locationChanged(QUrl newLocation);
+    void stateChange(QMediaRecorder::State state);
+    void statusChange(QMediaRecorder::Status status);
 
 protected:
     void keyPressEvent(QKeyEvent *event);

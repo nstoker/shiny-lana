@@ -44,16 +44,19 @@
 #include "imagesettings.h"
 
 #include <QMediaService>
-#include <QMediaRecorder>
+#include <QMediaRecorderControl>
 #include <QCameraViewfinder>
 #include <QMediaMetaData>
 
 #include <QMessageBox>
 #include <QPalette>
 
+#include <QUrl>
+
 #include <QtWidgets>
 #include <iostream>
 #include "qutilities.h"
+
 
 #if (defined(Q_WS_MAEMO_6)) && QT_VERSION >= 0x040700
 #define HAVE_CAMERA_BUTTONS
@@ -129,6 +132,8 @@ void Camera::setCamera(const QByteArray &cameraDevice)
 
     connect(mediaRecorder, SIGNAL(durationChanged(qint64)), this, SLOT(updateRecordTime()));
     connect(mediaRecorder, SIGNAL(error(QMediaRecorder::Error)), this, SLOT(displayRecorderError()));
+    connect(mediaRecorder, SIGNAL(statusChanged(QMediaRecorder::Status)), this, SLOT(statusChange(QMediaRecorder::Status)));
+    connect(mediaRecorder, SIGNAL(stateChanged(QMediaRecorder::State)), this, SLOT(stateChange(QMediaRecorder::State)));
 
     mediaRecorder->setMetaData(QMediaMetaData::Title, QVariant(QLatin1String("Test Title")));
 
@@ -153,6 +158,7 @@ void Camera::setCamera(const QByteArray &cameraDevice)
     ui->captureWidget->setTabEnabled(1, (camera->isCaptureModeSupported(QCamera::CaptureVideo)));
 
     updateCaptureMode();
+    // Hmm applySettings in MediaRecorderControl class mediaRecorder->applySettings();
     camera->start();
 }
 
@@ -168,9 +174,16 @@ void Camera::keyPressEvent(QKeyEvent * event)
         event->accept();
         break;
     case Qt::Key_Camera:
+    case Qt::Key_Space:
         if (camera->captureMode() == QCamera::CaptureStillImage) {
             takeImage();
         } else {
+            if (event->key()==Qt::Key_Camera)
+                std::cout<<"Key_Camera ";
+            else
+                std::cout<<"Key_Space ";
+            std::cout<<" pressed. Current recorder state '"<< MediaRecorderStateToQString(mediaRecorder->state()).toStdString()<<"'"<<std::endl;
+            std::cout<<"Status '" << MediaRecorderStatusToQString(mediaRecorder->status()).toStdString()<<"'"<<std::endl;
             if (mediaRecorder->state() == QMediaRecorder::RecordingState)
                 stop();
             else
@@ -275,6 +288,10 @@ void Camera::record()
     dumpMediaRecorder(mediaRecorder);
 
     mediaRecorder->record();
+
+    std::cout<<"Recording should have started"<<std::endl;
+    dumpMediaRecorder(mediaRecorder);
+
     updateRecordTime();
 }
 
@@ -462,5 +479,16 @@ void Camera::closeEvent(QCloseEvent *event)
 
 void Camera::locationChanged(QUrl newLocation)
 {
-    std::cout<<"Location Changed Signal "<< newLocation.toString().toStdString()<< std::endl;
+    std::cout<<"Location Changed SIGNAL '"<< newLocation.toString().toStdString()<<"'"<< std::endl;
+}
+
+void Camera::statusChange(QMediaRecorder::Status status)
+{
+    QString s = MediaRecorderStatusToQString(status);
+    std::cout<<"Status change SIGNAL '"<< s.toStdString()<<"'"<<std::endl;
+}
+
+void Camera::stateChange(QMediaRecorder::State state)
+{
+    std::cout<<"State change SIGNAL '"<< MediaRecorderStateToQString(state).toStdString()<<"'"<<std::endl;
 }
