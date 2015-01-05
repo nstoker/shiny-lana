@@ -94,18 +94,18 @@ QString getEncodingMode(QMultimedia::EncodingMode mode)
 void LogMediaRecorderVideoEncoder(QVideoEncoderSettings qve)
 {
     // Dump the encoder settings
-    LogMsg((char*)"FIX %i:%s Entry",__LINE__,__PRETTY_FUNCTION__);
+    LogMsg((char*)" %i:%s Entry",__LINE__,__PRETTY_FUNCTION__);
     if(qve.isNull())
-        LogMsg((char*)"FIX Video encoder is null!");
+        LogMsg((char*)"Video encoder is null!");
     else
     {
-        LogMsg((char*)"FIX Video encoder is not null");
-        LogMsg((char*)"FIX bitRate : %i",qve.bitRate());
-        LogMsg((char*)"FIX codec   : %s", QStringToCHAR(qve.codec()));
-        LogMsg((char*)"FIX encodingMode : %s ",QStringToCHAR(getEncodingMode(qve.encodingMode())));
-        LogMsg((char*)"FIX encodingOption ..");
-        LogMsg((char*)"FIX encodingOptions ..");
-        LogMsg((char*)"FIX frameRate  : %f", qve.frameRate());
+        LogMsg((char*)"Video encoder is not null");
+        LogMsg((char*)"bitRate : %i",qve.bitRate());
+        LogMsg((char*)"codec   : %s", QStringToCHAR(qve.codec()));
+        LogMsg((char*)"encodingMode : %s ",QStringToCHAR(getEncodingMode(qve.encodingMode())));
+        LogMsg((char*)"encodingOption ..");
+        LogMsg((char*)"encodingOptions ..");
+        LogMsg((char*)"frameRate  : %f", qve.frameRate());
     }
 }
 
@@ -114,35 +114,35 @@ void dumpMediaRecorder(QMediaRecorder *r)
     // Dump the supported resolutions
     if(!r)
     {
-        LogMsg((char*)"FIX ME WELL AND TRUELY BROKEN %i:%s: The QMediaRecorder object is not set",__LINE__,__PRETTY_FUNCTION__);
+        LogMsg((char*)"WELL AND TRUELY BROKEN %i:%s: The QMediaRecorder object is not set",__LINE__,__PRETTY_FUNCTION__);
         return;
     }
 
-    LogMsg((char*)"FIX DEBUG Supported AUDIO Codecs %i",r->supportedAudioCodecs().count());
+    LogMsg((char*)"Number of supported AUDIO Codecs %i",r->supportedAudioCodecs().count());
     foreach(const QString &codecName, r->supportedAudioCodecs())
     {
-        LogMsg((char*)"FIX DEBUG/t/t %s %s",QStringToCHAR(codecName) , QStringToCHAR(r->audioCodecDescription(codecName)));
+        LogMsg((char*)"/t/t %s %s",QStringToCHAR(codecName) , QStringToCHAR(r->audioCodecDescription(codecName)));
     }
 
-    LogMsg((char*)"\nFIX DEBUG Audio sample rates %i",r->supportedAudioSampleRates().count());
+    LogMsg((char*)"Number of Audio sample rates %i",r->supportedAudioSampleRates().count());
     foreach (int sampleRate, r->supportedAudioSampleRates()) {
-        LogMsg((char*)"FIX DEBUG\t\t%i",sampleRate);
+        LogMsg((char*)"\t\t%i",sampleRate);
     }
 
-    LogMsg((char*)"\nFIX DEBUG Video Codecs %i",r->supportedVideoCodecs().count());
+    LogMsg((char*)"Number of Video Codecs %i",r->supportedVideoCodecs().count());
     foreach(const QString &codecName,r->supportedVideoCodecs()){
-        LogMsg((char*)"FIX DEBUG\t\t%s %s", QStringToCHAR(codecName) , QStringToCHAR(r->videoCodecDescription(codecName)));
+        LogMsg((char*)"\t\t%s %s", QStringToCHAR(codecName) , QStringToCHAR(r->videoCodecDescription(codecName)));
     }
 
-    LogMsg((char*)"FIX DEBUG Video Frame Rates %i",r->supportedFrameRates().count());
+    LogMsg((char*)"Number of Video Frame Rates %i",r->supportedFrameRates().count());
     QList<qreal>supportedFrameRates=r->supportedFrameRates();
     qreal rate;
     foreach(rate, supportedFrameRates){
-        LogMsg((char*)"FIX DEBUG\t\t%f",rate) ;
+        LogMsg((char*)"\t\t%f",rate) ;
     }
-    LogMsg((char*)"FIX DEBUG Containers %i",r->supportedContainers().count());
+    LogMsg((char*)"Number of Containers %i",r->supportedContainers().count());
     foreach(const QString &format, r->supportedContainers()){
-        LogMsg((char*)"FIX ME DEBUG\t\t%s %s",QStringToCHAR(format) , QStringToCHAR(r->containerDescription(format)));
+        LogMsg((char*)"\t\t%s %s",QStringToCHAR(format) , QStringToCHAR(r->containerDescription(format)));
     }
 
 }
