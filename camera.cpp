@@ -137,6 +137,13 @@ void Camera::setCamera(const QByteArray &cameraDevice)
 
     mediaRecorder->setMetaData(QMediaMetaData::Title, QVariant(QLatin1String("Test Title")));
 
+    // From http://stackoverflow.com/questions/17650710/recording-video-from-usb-cam-with-qt5?rq=1
+    QVideoEncoderSettings settings = mediaRecorder->videoSettings();
+    settings.setResolution(640,480);
+    settings.setQuality(QMultimedia::VeryHighQuality);
+    settings.setFrameRate(30.0);
+    mediaRecorder->setVideoSettings(settings);
+
     connect(ui->exposureCompensation, SIGNAL(valueChanged(int)), SLOT(setExposureCompensation(int)));
 
     camera->setViewfinder(ui->viewfinder);
