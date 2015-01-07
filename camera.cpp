@@ -125,6 +125,8 @@ void Camera::setCamera(const QByteArray &cameraDevice)
     connect(camera, SIGNAL(error(QCamera::Error)), this, SLOT(displayCameraError()));
 
     mediaRecorder = new QMediaRecorder(camera);
+    dumpMediaRecorder("Created",mediaRecorder);
+
     connect(mediaRecorder, SIGNAL(stateChanged(QMediaRecorder::State)), this, SLOT(updateRecorderState(QMediaRecorder::State)));
     connect(mediaRecorder, SIGNAL(actualLocationChanged(QUrl)), this, SLOT(locationChanged(QUrl)));
 
@@ -139,10 +141,17 @@ void Camera::setCamera(const QByteArray &cameraDevice)
 
     // From http://stackoverflow.com/questions/17650710/recording-video-from-usb-cam-with-qt5?rq=1
     QVideoEncoderSettings settings = mediaRecorder->videoSettings();
+    settings.setCodec("video/mpeg2");
     settings.setResolution(640,480);
-    settings.setQuality(QMultimedia::VeryHighQuality);
+    settings.setQuality(QMultimedia::HighQuality);
     settings.setFrameRate(30.0);
     mediaRecorder->setVideoSettings(settings);
+
+    QAudioEncoderSettings audioSettings=mediaRecorder->audioSettings();
+    audioSettings.setChannelCount(2);
+    audioSettings.setCodec("audio/amr");
+    audioSettings.setQuality(QMultimedia::HighQuality);
+    mediaRecorder->setAudioSettings(audioSettings);
 
     connect(ui->exposureCompensation, SIGNAL(valueChanged(int)), SLOT(setExposureCompensation(int)));
 
@@ -285,19 +294,18 @@ void Camera::configureImageSettings()
 
 void Camera::record()
 {
-    if(!mediaRecorder->setOutputLocation(QUrl::fromLocalFile("~/banana.mov")))
+    if(!mediaRecorder->setOutputLocation(QUrl::fromLocalFile("/Users/stokern/banana.mov")))
         std::cout<<"Failed to set output location"<<std::endl;
 
     QUrl dest=mediaRecorder->outputLocation();
     QString d=dest.toString();
     std::cout<<"Output location "<<d.toStdString()<<std::endl;
 
-    dumpMediaRecorder(mediaRecorder);
+    dumpMediaRecorder("Just before record",mediaRecorder);
 
     mediaRecorder->record();
 
-    std::cout<<"Recording should have started"<<std::endl;
-    dumpMediaRecorder(mediaRecorder);
+    dumpMediaRecorder("Recording should have started",mediaRecorder);
 
     updateRecordTime();
 }
@@ -309,6 +317,9 @@ void Camera::pause()
 
 void Camera::stop()
 {
+    std::cout<<"Stop pressed"<<std::endl;
+    dumpMediaRecorder(mediaRecorder);
+
     mediaRecorder->stop();
 }
 
@@ -486,7 +497,7 @@ void Camera::closeEvent(QCloseEvent *event)
 
 void Camera::locationChanged(QUrl newLocation)
 {
-    std::cout<<"Location Changed SIGNAL '"<< newLocation.toString().toStdString()<<"'"<< std::endl;
+    std::cout<<"Actual location Changed SIGNAL '"<< newLocation.toString().toStdString()<<"'"<< std::endl;
 }
 
 void Camera::statusChange(QMediaRecorder::Status status)
