@@ -1,6 +1,16 @@
 #include "qutilities.h"
 #include "Logging.h"
 
+QString MediaRecorderStateToString(QMediaRecorder* r)
+{
+    return MediaRecorderStateToQString(r->state());
+}
+
+QString MediaRecorderStatusToString(QMediaRecorder* r)
+{
+    return MediaRecorderStatusToQString(r->status());
+}
+
 QString MediaRecorderStatusToQString(QMediaRecorder::Status status)
 {
     QString rv="";
@@ -109,6 +119,12 @@ void LogMediaRecorderVideoEncoder(QVideoEncoderSettings qve)
     }
 }
 
+void dumpMediaRecorder(QString s, QMediaRecorder*r)
+{
+    LogMsg((char*)"%s",QStringToCHAR(s));
+    dumpMediaRecorder(r);
+}
+
 void dumpMediaRecorder(QMediaRecorder *r)
 {
     // Dump the supported resolutions
@@ -144,5 +160,23 @@ void dumpMediaRecorder(QMediaRecorder *r)
     foreach(const QString &format, r->supportedContainers()){
         LogMsg((char*)"\t\t%s %s",QStringToCHAR(format) , QStringToCHAR(r->containerDescription(format)));
     }
+    LogMsg((char*)"Media Recorder State  '%s'",QStringToCHAR(MediaRecorderStateToString(r)));
+    LogMsg((char*)"Media Recorder Status '%s'",QStringToCHAR(MediaRecorderStatusToString(r)));
 
+    LogMsg((char*)"Media Recorder Error %i '%s'",r->error(),QStringToCHAR(r->errorString()));
+
+    LogMsg((char*)"Current audio settings");
+    QAudioEncoderSettings aes=r->audioSettings();
+
+    LogMsg((char*)"\tCodec '%s' %s.",QStringToCHAR(aes.codec()),QStringToCHAR(r->audioCodecDescription(aes.codec())));
+    LogMsg((char*)"Current video settings");
+    QVideoEncoderSettings ves=r->videoSettings();
+    LogMsg((char*)"\tCodec '%s' %s.",QStringToCHAR(ves.codec()),QStringToCHAR(r->videoCodecDescription(ves.codec())));
+
+    if(!r->isMetaDataAvailable())
+        LogMsg((char*)"No meta data");
+    else {
+        QStringList metaData = r->availableMetaData();
+        LogMsg((char*)"%i items of meta data",metaData.count());
+    }
 }

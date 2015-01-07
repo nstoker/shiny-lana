@@ -9,8 +9,12 @@
 
 QString MediaRecorderStatusToQString(QMediaRecorder::Status);
 QString MediaRecorderStateToQString(QMediaRecorder::State);
+
+QString MediaRecorderStatusToString(QMediaRecorder*);
+QString MediaRecorderStateToString(QMediaRecorder*);
+
 void LogMediaRecorderVideoEncoder(QVideoEncoderSettings);
 void dumpMediaRecorder(QMediaRecorder*qmr);
-
+void dumpMediaRecorder(QString s, QMediaRecorder*r);
 
 #endif // QUTILITIES_H
