@@ -1,6 +1,10 @@
 shiny-lana
 ==========
 
+The issues with recording have been sorted out now.
+
+The problem was that I was attempting to save using ~, but this is only available in a shell script. Oops.
+
 I am building an application to record multimedia files for ongoing processing.
 
 My current issue is that the [QMediaRecorder](http://doc.qt.io/qt-5/qmediarecorder.html) does not apparently save the video file onto the local drive - I have temporarily hard-coded the file to be saved as `banana.mov` into the users root folder.
